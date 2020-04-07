@@ -1,0 +1,16 @@
+C:\Users\Abed\source\repos\ProjectTemp\bin\Debug\netcoreapp2.1\appsettings.Development.json
+C:\Users\Abed\source\repos\ProjectTemp\bin\Debug\netcoreapp2.1\appsettings.json
+C:\Users\Abed\source\repos\ProjectTemp\bin\Debug\netcoreapp2.1\Properties\launchSettings.json
+C:\Users\Abed\source\repos\ProjectTemp\bin\Debug\netcoreapp2.1\ProjectTemp.deps.json
+C:\Users\Abed\source\repos\ProjectTemp\bin\Debug\netcoreapp2.1\ProjectTemp.runtimeconfig.json
+C:\Users\Abed\source\repos\ProjectTemp\bin\Debug\netcoreapp2.1\ProjectTemp.runtimeconfig.dev.json
+C:\Users\Abed\source\repos\ProjectTemp\bin\Debug\netcoreapp2.1\ProjectTemp.dll
+C:\Users\Abed\source\repos\ProjectTemp\bin\Debug\netcoreapp2.1\ProjectTemp.pdb
+C:\Users\Abed\source\repos\ProjectTemp\obj\Debug\netcoreapp2.1\ProjectTemp.csprojAssemblyReference.cache
+C:\Users\Abed\source\repos\ProjectTemp\obj\Debug\netcoreapp2.1\ProjectTemp.RazorAssemblyInfo.cache
+C:\Users\Abed\source\repos\ProjectTemp\obj\Debug\netcoreapp2.1\ProjectTemp.RazorAssemblyInfo.cs
+C:\Users\Abed\source\repos\ProjectTemp\obj\Debug\netcoreapp2.1\ProjectTemp.AssemblyInfoInputs.cache
+C:\Users\Abed\source\repos\ProjectTemp\obj\Debug\netcoreapp2.1\ProjectTemp.AssemblyInfo.cs
+C:\Users\Abed\source\repos\ProjectTemp\obj\Debug\netcoreapp2.1\ProjectTemp.RazorTargetAssemblyInfo.cache
+C:\Users\Abed\source\repos\ProjectTemp\obj\Debug\netcoreapp2.1\ProjectTemp.dll
+C:\Users\Abed\source\repos\ProjectTemp\obj\Debug\netcoreapp2.1\ProjectTemp.pdb
