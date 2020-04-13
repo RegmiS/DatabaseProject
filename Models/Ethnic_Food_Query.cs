@@ -6,33 +6,33 @@ using MySql.Data.MySqlClient;
 
 namespace DatabaseProject
 {
-    public class CustomerQuery
+    public class Ethnic_Food_Query
     {
         public AppDb Db { get; }
 
-        public CustomerQuery(AppDb db)
+        public Ethnic_Food_Query(AppDb db)
         {
             Db = db;
         }
 
-        public async Task<Customer> FindOneAsync(int id)
+        public async Task<Ethnic_Food> FindOneAsync(string id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `customerID`, `firstName`, `lastName`, `address` FROM `Customer` WHERE `customerID` = @customerid";
+            cmd.CommandText = @"SELECT `name`, `ethnicity` WHERE `name` = @name";
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@customerid",
-                DbType = DbType.Int32,
+                ParameterName = "@name",
+                DbType = DbType.String,
                 Value = id,
             });
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<List<Customer>> LatestPostsAsync()
+        public async Task<List<Ethnic_Food>> LatestPostsAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `customerID`, `firstName`, `lastName`, `address` FROM `Customer` ORDER BY `customerID`";
+            cmd.CommandText = @"SELECT `name`, `ethnicity` FROM `ethnic_food` ORDER BY `name`";
             return await ReadAllAsync(await cmd.ExecuteReaderAsync());
         }
 
@@ -40,29 +40,27 @@ namespace DatabaseProject
         {
             using var txn = await Db.Connection.BeginTransactionAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Customer`";
+            cmd.CommandText = @"DELETE FROM `ethnic_food`";
             await cmd.ExecuteNonQueryAsync();
             await txn.CommitAsync();
         }
 
-        private async Task<List<Customer>> ReadAllAsync(DbDataReader reader)
+        private async Task<List<Ethnic_Food>> ReadAllAsync(DbDataReader reader)
         {
-            var all_customers = new List<Customer>();
+            var all_foods = new List<Ethnic_Food>();
             using (reader)
             {
                 while (await reader.ReadAsync())
                 {
-                    var single_customer = new Customer(Db)
+                    var single_food = new Ethnic_Food(Db)
                     {
-                        customerID = reader.GetInt32(0),
-                        firstName = reader.GetString(1),
-                        lastName = reader.GetString(2),
-                        address = reader.GetString(3),
+                        name = reader.GetString(0),
+                        ethnicity = reader.GetString(1),
                     };
-                    all_customers.Add(single_customer);
+                    all_foods.Add(single_food);
                 }
             }
-            return all_customers;
+            return all_foods;
         }
     }
 }
