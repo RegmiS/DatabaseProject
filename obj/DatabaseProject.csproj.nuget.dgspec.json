@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\SandeshPC\\Desktop\\REPOS\\DatabaseProject\\DatabaseProject.csproj": {}
+    "C:\\Users\\Mr. Rowgen\\Downloads\\DatabaseProject-master\\DatabaseProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\SandeshPC\\Desktop\\REPOS\\DatabaseProject\\DatabaseProject.csproj": {
+    "C:\\Users\\Mr. Rowgen\\Downloads\\DatabaseProject-master\\DatabaseProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\SandeshPC\\Desktop\\REPOS\\DatabaseProject\\DatabaseProject.csproj",
+        "projectUniqueName": "C:\\Users\\Mr. Rowgen\\Downloads\\DatabaseProject-master\\DatabaseProject.csproj",
         "projectName": "DatabaseProject",
-        "projectPath": "C:\\Users\\SandeshPC\\Desktop\\REPOS\\DatabaseProject\\DatabaseProject.csproj",
-        "packagesPath": "C:\\Users\\SandeshPC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\SandeshPC\\Desktop\\REPOS\\DatabaseProject\\obj\\",
+        "projectPath": "C:\\Users\\Mr. Rowgen\\Downloads\\DatabaseProject-master\\DatabaseProject.csproj",
+        "packagesPath": "C:\\Users\\Mr. Rowgen\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Mr. Rowgen\\Downloads\\DatabaseProject-master\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\SandeshPC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Mr. Rowgen\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -64,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         }
       }
     }
