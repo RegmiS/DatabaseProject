@@ -24,28 +24,21 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task InsertAsync()
+        public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `Favourites` (`dateFavourited`, `restaurantID`) VALUES (@crDistance, @dateFavourited, @restaurantID);";
+            cmd.CommandText = "newFavourite";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
             customerID = (int)cmd.LastInsertedId;
         }
 
-        public async Task UpdateAsync()
+        public async Task DeleteOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `Favourites` SET `dateFavourited` = @dateFavourited, `restaurantID` = @restaurantID WHERE `customerID` = @customerID";
-            BindParams(cmd);
-            BindId(cmd);
-            await cmd.ExecuteNonQueryAsync();
-        }
-
-        public async Task DeleteAsync()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Favourites` WHERE `customerID` = @customerID;";
+            cmd.CommandText = "deleteCustomerFavourite";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }

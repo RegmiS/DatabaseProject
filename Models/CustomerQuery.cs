@@ -15,37 +15,30 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task<Customer> FindOneAsync(int id)
+        public async Task<Customer> GetOneCustomer(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `customerID`, `firstName`, `lastName`, `address` FROM `Customer` WHERE `customerID` = @customerid";
+            cmd.CommandText = "getOneCustomer";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@customerid",
+                ParameterName = "@id",
                 DbType = DbType.Int32,
                 Value = id,
             });
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var result = await AllCustomers(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<List<Customer>> LatestPostsAsync()
+        public async Task<List<Customer>> GetAll()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `customerID`, `firstName`, `lastName`, `address` FROM `Customer` ORDER BY `customerID`";
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            cmd.CommandText = "getCustomers";
+            cmd.CommandType = CommandType.StoredProcedure;
+            return await AllCustomers(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task DeleteAllAsync()
-        {
-            using var txn = await Db.Connection.BeginTransactionAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Customer`";
-            await cmd.ExecuteNonQueryAsync();
-            await txn.CommitAsync();
-        }
-
-        private async Task<List<Customer>> ReadAllAsync(DbDataReader reader)
+        private async Task<List<Customer>> AllCustomers(DbDataReader reader)
         {
             var all_customers = new List<Customer>();
             using (reader)

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DatabaseProject.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Food_Property")]
     public class Food_PropertyController : ControllerBase
     {
         public Food_PropertyController(AppDb db)
@@ -13,21 +13,23 @@ namespace DatabaseProject.Controllers
 
         // GET api/blog
         [HttpGet]
-        public async Task<IActionResult> GetLatest()
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll()
         {
             await Db.Connection.OpenAsync();
             var query = new Food_PropertyQuery(Db);
-            var result = await query.LatestPostsAsync();
+            var result = await query.GetAll();
             return new OkObjectResult(result);
         }
 
         // GET api/blog/5
         [HttpGet("{foodName}")]
-        public async Task<IActionResult> GetAll(string foodName)
+        [Route("Get/{foodName}")]
+        public async Task<IActionResult> GetOne(string foodName)
         {
             await Db.Connection.OpenAsync();
             var query = new Food_PropertyQuery(Db);
-            var result = await query.FindAllAsync(foodName);
+            var result = await query.GetOne(foodName);
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
@@ -35,49 +37,13 @@ namespace DatabaseProject.Controllers
 
         // POST api/blog
         [HttpPost]
+        [Route("New")]
         public async Task<IActionResult> Post([FromBody]Food_Property body)
         {
             await Db.Connection.OpenAsync();
             body.Db = Db;
-            await body.InsertAsync();
+            await body.InsertOne();
             return new OkObjectResult(body);
-        }
-
-        // PUT api/blog/5
-        [HttpPut("{foodName}")]
-        public async Task<IActionResult> PutOne(string foodName, [FromBody]Food_Property body)
-        {
-            await Db.Connection.OpenAsync();
-            var query = new Food_PropertyQuery(Db);
-            var result = await query.FindOneAsync(foodName);
-            if (result is null)
-                return new NotFoundResult();
-            result.foodProperty = body.foodProperty;
-            await result.UpdateAsync();
-            return new OkObjectResult(result);
-        }
-
-        // DELETE api/blog/5
-        [HttpDelete("{foodName}")]
-        public async Task<IActionResult> DeleteOne(string foodName)
-        {
-            await Db.Connection.OpenAsync();
-            var query = new Food_PropertyQuery(Db);
-            var result = await query.FindOneAsync(foodName);
-            if (result is null)
-                return new NotFoundResult();
-            await result.DeleteAsync();
-            return new OkResult();
-        }
-
-        // DELETE api/blog
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAll()
-        {
-            await Db.Connection.OpenAsync();
-            var query = new Food_PropertyQuery(Db);
-            await query.DeleteAllAsync();
-            return new OkResult();
         }
 
         public AppDb Db { get; }

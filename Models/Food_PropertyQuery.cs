@@ -15,50 +15,29 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task<Food_Property> FindOneAsync(string foodName)
+        public async Task<List<Food_Property>> GetOne(string foodName)
         {
+            //doesn't work rn
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `foodName`, `foodProperty` FROM `food_property` WHERE `foodName` = @foodName";
+            cmd.CommandText = "getFoodProperties";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@foodName",
+                ParameterName = "@fName",
                 DbType = DbType.String,
                 Value = foodName,
             });
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
-            return result.Count > 0 ? result[0] : null;
+            return await AllFoodProperties(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task<List<Food_Property>> FindAllAsync(string foodName)
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `foodName`, `foodProperty` FROM `food_property` WHERE `foodName` = @foodName";
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@foodName",
-                DbType = DbType.String,
-                Value = foodName,
-            });
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
-        }
-
-        public async Task<List<Food_Property>> LatestPostsAsync()
+        public async Task<List<Food_Property>> GetAll()
         {
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = @"SELECT `foodName`, `foodProperty` FROM `food_property` ORDER BY `foodName`";
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            return await AllFoodProperties(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task DeleteAllAsync()
-        {
-            using var txn = await Db.Connection.BeginTransactionAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `food_property`";
-            await cmd.ExecuteNonQueryAsync();
-            await txn.CommitAsync();
-        }
-
-        private async Task<List<Food_Property>> ReadAllAsync(DbDataReader reader)
+        private async Task<List<Food_Property>> AllFoodProperties(DbDataReader reader)
         {
             var all_foods = new List<Food_Property>();
             using (reader)

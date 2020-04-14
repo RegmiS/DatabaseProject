@@ -23,28 +23,22 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task InsertAsync()
+        public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `Customer` (`firstName`, `lastName`, `address`) VALUES (@firstname, @lastname, @address);";
+            cmd.CommandText = "newCustomer";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
             customerID = (int) cmd.LastInsertedId;
         }
 
-        public async Task UpdateAsync()
+        public async Task UpdateOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `Customer` SET `firstName` = @firstname, `lastName` = @lastname, `address` = @address WHERE `customerID` = @customerid";
+            cmd.CommandText = "updateCustomerInformation";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindParams(cmd);
-            BindId(cmd);
-            await cmd.ExecuteNonQueryAsync();
-        }
-
-        public async Task DeleteAsync()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Customer` WHERE `customerID` = @customerid;";
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }

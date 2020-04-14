@@ -22,27 +22,21 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task InsertAsync()
+        public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `ethic_food` (`name`, `ethnicity`) VALUES (@name, @ethnicity);";
+            cmd.CommandText = "newEthnicFood";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task UpdateAsync()
+        public async Task UpdateOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `ethic_food` SET `name` = @name, `ethnicity` = @ethnicity WHERE `name` = @name";
+            cmd.CommandText = "updateFoodInformation";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindParams(cmd);
-            BindId(cmd);
-            await cmd.ExecuteNonQueryAsync();
-        }
-
-        public async Task DeleteAsync()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `ethic_food` WHERE `name` = @name;";
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }

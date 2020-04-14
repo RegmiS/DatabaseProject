@@ -15,37 +15,30 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task<Ethnic_Food> FindOneAsync(string name)
+        public async Task<Ethnic_Food> GetOne(string name)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `name`, `ethnicity` FROM `ethnic_food` WHERE `name` = @name";
+            cmd.CommandText = "getFoodEthnicity";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@name",
+                ParameterName = "@fname",
                 DbType = DbType.String,
                 Value = name,
             });
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var result = await AllFoods(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<List<Ethnic_Food>> LatestPostsAsync()
+        public async Task<List<Ethnic_Food>> GetAll()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `name`, `ethnicity` FROM `ethnic_food` ORDER BY `name`";
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            cmd.CommandText = "getAllFood";
+            cmd.CommandType = CommandType.StoredProcedure;
+            return await AllFoods(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task DeleteAllAsync()
-        {
-            using var txn = await Db.Connection.BeginTransactionAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `ethnic_food`";
-            await cmd.ExecuteNonQueryAsync();
-            await txn.CommitAsync();
-        }
-
-        private async Task<List<Ethnic_Food>> ReadAllAsync(DbDataReader reader)
+        private async Task<List<Ethnic_Food>> AllFoods(DbDataReader reader)
         {
             var all_foods = new List<Ethnic_Food>();
             using (reader)

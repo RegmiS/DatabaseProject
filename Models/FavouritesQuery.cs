@@ -16,50 +16,38 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task<Favourites> FindOneAsync(int id)
+        //gets favourites for one customer
+        public async Task<List<Favourites>> GetOne(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `customerID`, `dateFavourited`, `restaurantID` FROM `Favourites` WHERE `customerID` = @customerID";
+            cmd.CommandText = "getCustomerFavourites";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@customerID",
+                ParameterName = "@id",
                 DbType = DbType.Int32,
                 Value = id,
             });
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
-            return result.Count > 0 ? result[0] : null;
+            return await AllFavourites(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task<List<Favourites>> FindAllAsync(int customerID)
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `customerID`, `dateFavourited`, `restaurantID` FROM `Favourites` WHERE `customerID` = @customerID";
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@customerID",
-                DbType = DbType.Int32,
-                Value = customerID,
-            });
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
-        }
-
-        public async Task<List<Favourites>> LatestPostsAsync()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `customerID`, `dateFavourited`, `restaurantID` FROM `Favourites` ORDER BY `customerID`";
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
-        }
-
-        public async Task DeleteAllAsync()
+        public async Task DeleteOne(int id)
         {
             using var txn = await Db.Connection.BeginTransactionAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Favourites`";
-            await cmd.ExecuteNonQueryAsync();
+            cmd.CommandText = "deleteCustomerFavourite";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@id",
+                DbType = DbType.Int32,
+                Value = id,
+            });
+            await cmd.ExecuteReaderAsync();
             await txn.CommitAsync();
         }
 
-        private async Task<List<Favourites>> ReadAllAsync(DbDataReader reader)
+        private async Task<List<Favourites>> AllFavourites(DbDataReader reader)
         {
             var all_customers = new List<Favourites>();
             using (reader)
@@ -69,8 +57,8 @@ namespace DatabaseProject
                     var single_customer = new Favourites(Db)
                     {
                         customerID = reader.GetInt32(0),
-                        dateFavourited = reader.GetDateTime(1).ToString("MM/dd/yyyy"),
-                        restaurantID = reader.GetInt32(2),
+                        restaurantID = reader.GetInt32(1),
+                        dateFavourited = reader.GetDateTime(2).ToString("MM/dd/yyyy"),
                     };
                     all_customers.Add(single_customer);
                 }
