@@ -1,4 +1,4 @@
-// represents a single ethnicity, needs insert, update, and delete for customers with certain ids
+// represents a single search, needs insert, update, and delete for searchs with certain ids
 
 using System.Data;
 using System.Threading.Tasks;
@@ -6,18 +6,18 @@ using MySql.Data.MySqlClient;
 
 namespace DatabaseProject
 {
-    public class Ethnic_Food
+    public class Search
     {
-        public string name { get; set; }
-        public string ethnicity { get; set; }
+        public int searchID { get; set; }
+        public int customerID { get; set; }
 
         internal AppDb Db { get; set; }
 
-        public Ethnic_Food()
+        public Search()
         {
         }
 
-        internal Ethnic_Food(AppDb db)
+        internal Search(AppDb db)
         {
             Db = db;
         }
@@ -25,15 +25,16 @@ namespace DatabaseProject
         public async Task InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `ethic_food` (`name`, `ethnicity`) VALUES (@name, @ethnicity);";
+            cmd.CommandText = @"INSERT INTO `Search` (`customerID`) VALUES (@customerID);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
+            searchID = (int)cmd.LastInsertedId;
         }
 
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `ethic_food` SET `name` = @name, `ethnicity` = @ethnicity WHERE `name` = @name";
+            cmd.CommandText = @"UPDATE `Search` SET `customerID` = @customerID WHERE `SearchID` = @Searchid";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -42,7 +43,7 @@ namespace DatabaseProject
         public async Task DeleteAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `ethic_food` WHERE `name` = @name;";
+            cmd.CommandText = @"DELETE FROM `Search` WHERE `SearchID` = @Searchid;";
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -51,9 +52,9 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@name",
-                DbType = DbType.String,
-                Value = name,
+                ParameterName = "@Searchid",
+                DbType = DbType.Int32,
+                Value = searchID,
             });
         }
 
@@ -61,9 +62,9 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@ethnicity",
-                DbType = DbType.String,
-                Value = ethnicity,
+                ParameterName = "@customerID",
+                DbType = DbType.Int32,
+                Value = customerID,
             });
         }
 

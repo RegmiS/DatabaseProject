@@ -18,7 +18,7 @@ namespace DatabaseProject
         public async Task<Ethnic_Food> FindOneAsync(string name)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `name`, `ethnicity` WHERE `name` = @name";
+            cmd.CommandText = @"SELECT `name`, `ethnicity` FROM `ethnic_food` WHERE `name` = @name";
             cmd.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@name",

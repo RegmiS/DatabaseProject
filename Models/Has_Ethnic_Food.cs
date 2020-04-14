@@ -1,4 +1,4 @@
-// represents a single ethnicity, needs insert, update, and delete for customers with certain ids
+// represents a single food property, needs insert, update, and delete for foodss with certain names
 
 using System.Data;
 using System.Threading.Tasks;
@@ -6,18 +6,18 @@ using MySql.Data.MySqlClient;
 
 namespace DatabaseProject
 {
-    public class Ethnic_Food
+    public class Has_Ethnic_Food
     {
-        public string name { get; set; }
-        public string ethnicity { get; set; }
+        public int restaurantID { get; set; }
+        public string foodName { get; set; }
 
         internal AppDb Db { get; set; }
 
-        public Ethnic_Food()
+        public Has_Ethnic_Food()
         {
         }
 
-        internal Ethnic_Food(AppDb db)
+        internal Has_Ethnic_Food(AppDb db)
         {
             Db = db;
         }
@@ -25,7 +25,7 @@ namespace DatabaseProject
         public async Task InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `ethic_food` (`name`, `ethnicity`) VALUES (@name, @ethnicity);";
+            cmd.CommandText = @"INSERT INTO `ethic_food` (`restaurantID`, `foodName`) VALUES (@restaurantID, @foodName);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -33,7 +33,7 @@ namespace DatabaseProject
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `ethic_food` SET `name` = @name, `ethnicity` = @ethnicity WHERE `name` = @name";
+            cmd.CommandText = @"UPDATE `ethic_food` SET `restaurantID` = @restaurantID, `foodName` = @foodName WHERE `restaurantID` = @restaurantID";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -42,7 +42,7 @@ namespace DatabaseProject
         public async Task DeleteAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `ethic_food` WHERE `name` = @name;";
+            cmd.CommandText = @"DELETE FROM `ethic_food` WHERE `restaurantID` = @restaurantID;";
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -51,9 +51,9 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@name",
+                ParameterName = "@restaurantID",
                 DbType = DbType.String,
-                Value = name,
+                Value = restaurantID,
             });
         }
 
@@ -61,9 +61,9 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@ethnicity",
+                ParameterName = "@foodName",
                 DbType = DbType.String,
-                Value = ethnicity,
+                Value = foodName,
             });
         }
 
