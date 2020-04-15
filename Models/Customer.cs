@@ -28,6 +28,7 @@ namespace DatabaseProject
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = "newCustomer";
             cmd.CommandType = CommandType.StoredProcedure;
+            BindId(cmd);
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
             customerID = (int) cmd.LastInsertedId;
@@ -47,7 +48,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@customerid",
+                ParameterName = "@id",
                 DbType = DbType.Int32,
                 Value = customerID,
             });
@@ -57,19 +58,19 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@firstname",
+                ParameterName = "@first",
                 DbType = DbType.String,
                 Value = firstName,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@lastname",
+                ParameterName = "@last",
                 DbType = DbType.String,
                 Value = lastName,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@address",
+                ParameterName = "@addr",
                 DbType = DbType.String,
                 Value = address,
             });
