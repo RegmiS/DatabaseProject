@@ -18,7 +18,8 @@ namespace DatabaseProject
         public async Task<Ethnic_Food> FindOneAsync(string id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `name`, `ethnicity` WHERE `name` = @name";
+            cmd.CommandText = "getFoodEthnicity";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@name",
@@ -32,7 +33,8 @@ namespace DatabaseProject
         public async Task<List<Ethnic_Food>> LatestPostsAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `name`, `ethnicity` FROM `ethnic_food` ORDER BY `name`";
+            cmd.CommandText = "getAllFood";
+            cmd.CommandType = CommandType.StoredProcedure;
             return await ReadAllAsync(await cmd.ExecuteReaderAsync());
         }
 

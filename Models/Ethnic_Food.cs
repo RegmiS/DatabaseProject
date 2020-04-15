@@ -27,6 +27,7 @@ namespace DatabaseProject
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = "newEthnicFood";
             cmd.CommandType = CommandType.StoredProcedure;
+            BindId(cmd);
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -45,7 +46,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@name",
+                ParameterName = "@fname",
                 DbType = DbType.String,
                 Value = name,
             });
@@ -55,7 +56,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@ethnicity",
+                ParameterName = "@eEthnicitiy",
                 DbType = DbType.String,
                 Value = ethnicity,
             });

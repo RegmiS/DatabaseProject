@@ -37,6 +37,7 @@ namespace DatabaseProject.Controllers
 
         // POST api/blog
         [HttpPost]
+        [Route("New")]
         public async Task<IActionResult> Post([FromBody]Ethnic_Food body)
         {
             await Db.Connection.OpenAsync();
