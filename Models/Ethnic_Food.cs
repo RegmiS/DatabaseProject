@@ -10,6 +10,7 @@ namespace DatabaseProject
     {
         public string name { get; set; }
         public string ethnicity { get; set; }
+
         internal AppDb Db { get; set; }
 
         public Ethnic_Food()
@@ -21,28 +22,22 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task InsertAsync()
+        public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `ethic_food` (`name`, `ethnicity`) VALUES (@name, @ethnicity);";
-            BindParams(cmd);
-            await cmd.ExecuteNonQueryAsync();
-            name = (string)cmd.ExecuteScalar();
-        }
-
-        public async Task UpdateAsync()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `ethic_food` SET `name` = @name, `ethnicity` = @ethnicity WHERE `name` = @name";
-            BindParams(cmd);
+            cmd.CommandText = "newEthnicFood";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindId(cmd);
+            BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task DeleteAsync()
+        public async Task UpdateOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `ethic_food` WHERE `name` = @name;";
+            cmd.CommandText = "updateFoodEthnicity";
+            cmd.CommandType = CommandType.StoredProcedure;
+            BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -51,7 +46,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@name",
+                ParameterName = "@fname",
                 DbType = DbType.String,
                 Value = name,
             });
@@ -61,7 +56,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@ethnicity",
+                ParameterName = "@eEthnicity",
                 DbType = DbType.String,
                 Value = ethnicity,
             });

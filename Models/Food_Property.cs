@@ -1,4 +1,4 @@
-// represents a single owner, needs insert, update, and delete for owners with certain ids
+// represents a single food property, needs insert, update, and delete for foodss with certain names
 
 using System.Data;
 using System.Threading.Tasks;
@@ -6,19 +6,18 @@ using MySql.Data.MySqlClient;
 
 namespace DatabaseProject
 {
-    public class Owner
+    public class Food_Property
     {
-        public int ownerID { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
+        public string foodName { get; set; }
+        public string foodProperty { get; set; }
 
         internal AppDb Db { get; set; }
 
-        public Owner()
+        public Food_Property()
         {
         }
 
-        internal Owner(AppDb db)
+        internal Food_Property(AppDb db)
         {
             Db = db;
         }
@@ -26,17 +25,17 @@ namespace DatabaseProject
         public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = "newOwner";
+            cmd.CommandText = "newFoodProperty";
             cmd.CommandType = CommandType.StoredProcedure;
+            BindId(cmd);
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
-            ownerID = (int)cmd.LastInsertedId;
         }
 
         public async Task UpdateOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = "updateOwnerInformation";
+            cmd.CommandText = "updateFoodProperty";
             cmd.CommandType = CommandType.StoredProcedure;
             BindParams(cmd);
             BindId(cmd);
@@ -47,9 +46,9 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@id",
-                DbType = DbType.Int32,
-                Value = ownerID,
+                ParameterName = "@fname",
+                DbType = DbType.String,
+                Value = foodName,
             });
         }
 
@@ -57,15 +56,9 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@first",
+                ParameterName = "@foodProperty",
                 DbType = DbType.String,
-                Value = firstName,
-            });
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@last",
-                DbType = DbType.String,
-                Value = lastName,
+                Value = foodProperty,
             });
         }
 

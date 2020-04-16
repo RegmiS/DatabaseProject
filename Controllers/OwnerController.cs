@@ -11,74 +11,55 @@ namespace DatabaseProject.Controllers
             Db = db;
         }
 
-        // GET api/blog
+        // GET api/Owner/GetAll
         [HttpGet]
+        [Route("GetAll")]
         public async Task<IActionResult> GetLatest()
         {
             await Db.Connection.OpenAsync();
             var query = new OwnerQuery(Db);
-            var result = await query.LatestPostsAsync();
+            var result = await query.GetAll();
             return new OkObjectResult(result);
         }
 
-        // GET api/blog/5
+        // GET api/Owner/Get/5
         [HttpGet("{id}")]
+        [Route("Get/{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
             await Db.Connection.OpenAsync();
             var query = new OwnerQuery(Db);
-            var result = await query.FindOneAsync(id);
+            var result = await query.GetOne(id);
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
         }
 
-        // POST api/blog
+        // POST api/Owner/New
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Owner body)
+        [Route("New")]
+        public async Task<IActionResult> PostOne([FromBody]Owner body)
         {
             await Db.Connection.OpenAsync();
             body.Db = Db;
-            await body.InsertAsync();
+            await body.InsertOne();
             return new OkObjectResult(body);
         }
 
-        // PUT api/blog/5
+        // PUT api/Owner/Update/5
         [HttpPut("{id}")]
+        [Route("Update/{id}")]
         public async Task<IActionResult> PutOne(int id, [FromBody]Owner body)
         {
             await Db.Connection.OpenAsync();
             var query = new OwnerQuery(Db);
-            var result = await query.FindOneAsync(id);
+            var result = await query.GetOne(id);
             if (result is null)
                 return new NotFoundResult();
             result.firstName = body.firstName;
             result.lastName = body.lastName;
-            await result.UpdateAsync();
+            await result.UpdateOne();
             return new OkObjectResult(result);
-        }
-
-        // DELETE api/blog/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOne(int id)
-        {
-            await Db.Connection.OpenAsync();
-            var query = new OwnerQuery(Db);
-            var result = await query.FindOneAsync(id);
-            if (result is null)
-                return new NotFoundResult();
-            await result.DeleteAsync();
-            return new OkResult();
-        }
-
-        // DELETE api/blog
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAll()
-        {
-            await Db.Connection.OpenAsync();
-            var query = new OwnerQuery(Db);
-            await query.DeleteAllAsync();
-            return new OkResult();
         }
 
         public AppDb Db { get; }

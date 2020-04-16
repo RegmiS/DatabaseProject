@@ -15,37 +15,30 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task<Owner> FindOneAsync(int id)
+        public async Task<Owner> GetOne(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `ownerID`, `firstName`, `lastName` FROM `Owner` WHERE `ownerID` = @ownerid";
+            cmd.CommandText = "getOneOwner";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@ownerid",
+                ParameterName = "@id",
                 DbType = DbType.Int32,
                 Value = id,
             });
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var result = await AllOwners(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<List<Owner>> LatestPostsAsync()
+        public async Task<List<Owner>> GetAll()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `ownerID`, `firstName`, `lastName` FROM `Owner` ORDER BY `ownerID`";
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            cmd.CommandText = "getOwners";
+            cmd.CommandType = CommandType.StoredProcedure;
+            return await AllOwners(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task DeleteAllAsync()
-        {
-            using var txn = await Db.Connection.BeginTransactionAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Owner`";
-            await cmd.ExecuteNonQueryAsync();
-            await txn.CommitAsync();
-        }
-
-        private async Task<List<Owner>> ReadAllAsync(DbDataReader reader)
+        private async Task<List<Owner>> AllOwners(DbDataReader reader)
         {
             var all_owners = new List<Owner>();
             using (reader)
