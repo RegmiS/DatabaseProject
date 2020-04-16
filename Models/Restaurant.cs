@@ -25,28 +25,23 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task InsertAsync()
+        public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `Restaurant` (`address`, `name`, `priceRange`, `ownerID`) VALUES (@address, @name, @priceRange, @ownerID);";
-            BindParams(cmd);
-            await cmd.ExecuteNonQueryAsync();
-            restaurantID = (int)cmd.LastInsertedId;
-        }
-
-        public async Task UpdateAsync()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `Restaurant` SET `address` = @address, `name` = @name, `priceRange` = @priceRange, `ownerID` = @ownerID WHERE `restaurantID` = @restaurantid";
-            BindParams(cmd);
+            cmd.CommandText = "newRestaurant";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindId(cmd);
+            BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
+            restaurantID = (int) cmd.LastInsertedId;
         }
 
-        public async Task DeleteAsync()
+        public async Task UpdateOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Restaurant` WHERE `restaurantID` = @restaurantid;";
+            cmd.CommandText = "updaterestaurantInformation";
+            cmd.CommandType = CommandType.StoredProcedure;
+            BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -55,7 +50,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@restaurantid",
+                ParameterName = "@rid",
                 DbType = DbType.Int32,
                 Value = restaurantID,
             });
@@ -65,25 +60,25 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@address",
+                ParameterName = "@rAddress",
                 DbType = DbType.String,
                 Value = address,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@name",
+                ParameterName = "@rName",
                 DbType = DbType.String,
                 Value = name,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@priceRange",
+                ParameterName = "@rPrice",
                 DbType = DbType.String,
                 Value = priceRange,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@ownerID",
+                ParameterName = "@rOwner",
                 DbType = DbType.Int32,
                 Value = ownerID,
             });

@@ -15,37 +15,30 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task<Search> FindOneAsync(int id)
+        public async Task<Search> GetOneSearch(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `searchID`, `customerID` FROM `Search` WHERE `searchID` = @searchID";
+            cmd.CommandText = "getSearchInformation";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@searchID",
+                ParameterName = "@sid",
                 DbType = DbType.Int32,
                 Value = id,
             });
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var result = await AllSearchs(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<List<Search>> LatestPostsAsync()
+        public async Task<List<Search>> GetAll()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `searchID`, `customerID` FROM `Search` ORDER BY `searchID`";
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            cmd.CommandText = "getAllSearches";
+            cmd.CommandType = CommandType.StoredProcedure;
+            return await AllSearchs(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task DeleteAllAsync()
-        {
-            using var txn = await Db.Connection.BeginTransactionAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Search`";
-            await cmd.ExecuteNonQueryAsync();
-            await txn.CommitAsync();
-        }
-
-        private async Task<List<Search>> ReadAllAsync(DbDataReader reader)
+        private async Task<List<Search>> AllSearchs(DbDataReader reader)
         {
             var all_searchs = new List<Search>();
             using (reader)

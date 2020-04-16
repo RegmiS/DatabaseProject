@@ -15,37 +15,30 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task<Search_Criteria> FindOneAsync(int id)
+        public async Task<Search_Criteria> GetOneSearch_Criteria(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `searchID`, `customerID`, `searchCriteria` FROM `Search_Criteria` WHERE `searchID` = @searchID";
+            cmd.CommandText = "getSearchCriteria";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@searchID",
+                ParameterName = "@sid",
                 DbType = DbType.Int32,
                 Value = id,
             });
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var result = await AllSearch_Criterias(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<List<Search_Criteria>> LatestPostsAsync()
+        public async Task<List<Search_Criteria>> GetAll()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `searchID`, `customerID`, `searchCriteria` FROM `Search_Criteria` ORDER BY `searchID`";
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            cmd.CommandText = "getAllSearchCriteria";
+            cmd.CommandType = CommandType.StoredProcedure;
+            return await AllSearch_Criterias(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task DeleteAllAsync()
-        {
-            using var txn = await Db.Connection.BeginTransactionAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Search_Criteria`";
-            await cmd.ExecuteNonQueryAsync();
-            await txn.CommitAsync();
-        }
-
-        private async Task<List<Search_Criteria>> ReadAllAsync(DbDataReader reader)
+        private async Task<List<Search_Criteria>> AllSearch_Criterias(DbDataReader reader)
         {
             var all_searchs = new List<Search_Criteria>();
             using (reader)

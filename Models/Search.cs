@@ -22,28 +22,23 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task InsertAsync()
+        public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `Search` (`customerID`) VALUES (@customerID);";
-            BindParams(cmd);
-            await cmd.ExecuteNonQueryAsync();
-            searchID = (int)cmd.LastInsertedId;
-        }
-
-        public async Task UpdateAsync()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `Search` SET `customerID` = @customerID WHERE `SearchID` = @Searchid";
-            BindParams(cmd);
+            cmd.CommandText = "newSearch";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindId(cmd);
+            BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
+            customerID = (int) cmd.LastInsertedId;
         }
 
-        public async Task DeleteAsync()
+        public async Task UpdateOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Search` WHERE `SearchID` = @Searchid;";
+            cmd.CommandText = "updateSearchInformation";
+            cmd.CommandType = CommandType.StoredProcedure;
+            BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -52,7 +47,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@Searchid",
+                ParameterName = "@sid",
                 DbType = DbType.Int32,
                 Value = searchID,
             });
@@ -62,7 +57,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@customerID",
+                ParameterName = "@cid",
                 DbType = DbType.Int32,
                 Value = customerID,
             });

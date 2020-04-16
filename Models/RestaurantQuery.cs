@@ -15,44 +15,37 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task<Restaurant> FindOneAsync(int id)
+        public async Task<Restaurant> GetOneRestaurant(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `restaurantID`, `address`, `name`, `priceRange`, `ownerID` FROM `Restaurant` WHERE `restaurantID` = @restaurantID";
+            cmd.CommandText = "getRestaurantInformation";
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@restaurantID",
+                ParameterName = "@rid",
                 DbType = DbType.Int32,
                 Value = id,
             });
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var result = await AllRestaurants(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<List<Restaurant>> LatestPostsAsync()
+        public async Task<List<Restaurant>> GetAll()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"SELECT `restaurantID`, `address`, `name`, `priceRange`, `ownerID` FROM `Restaurant` ORDER BY `restaurantID`";
-            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            cmd.CommandText = "getRestaurants";
+            cmd.CommandType = CommandType.StoredProcedure;
+            return await AllRestaurants(await cmd.ExecuteReaderAsync());
         }
 
-        public async Task DeleteAllAsync()
+        private async Task<List<Restaurant>> AllRestaurants(DbDataReader reader)
         {
-            using var txn = await Db.Connection.BeginTransactionAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Restaurant`";
-            await cmd.ExecuteNonQueryAsync();
-            await txn.CommitAsync();
-        }
-
-        private async Task<List<Restaurant>> ReadAllAsync(DbDataReader reader)
-        {
-            var all_customers = new List<Restaurant>();
+            var all_Restaurants = new List<Restaurant>();
             using (reader)
             {
                 while (await reader.ReadAsync())
                 {
-                    var single_customer = new Restaurant(Db)
+                    var single_Restaurant = new Restaurant(Db)
                     {
                         restaurantID = reader.GetInt32(0),
                         address = reader.GetString(1),
@@ -60,10 +53,10 @@ namespace DatabaseProject
                         priceRange = reader.GetString(3),
                         ownerID = reader.GetInt32(4),
                     };
-                    all_customers.Add(single_customer);
+                    all_Restaurants.Add(single_Restaurant);
                 }
             }
-            return all_customers;
+            return all_Restaurants;
         }
     }
 }

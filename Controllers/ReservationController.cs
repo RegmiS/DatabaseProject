@@ -4,7 +4,7 @@ using System;
 
 namespace DatabaseProject.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Reservation")]
     public class ReservationController : ControllerBase
     {
         public ReservationController(AppDb db)
@@ -12,76 +12,58 @@ namespace DatabaseProject.Controllers
             Db = db;
         }
 
-        // GET api/blog
+        // GET api/Reservation/GetAll
         [HttpGet]
-        public async Task<IActionResult> GetLatest()
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll()
         {
             await Db.Connection.OpenAsync();
             var query = new ReservationQuery(Db);
-            var result = await query.LatestPostsAsync();
+            var result = await query.GetAll();
             return new OkObjectResult(result);
         }
 
-        // GET api/blog/5
+        // GET api/Reservation/Get/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOne(int id)
+        [Route("Get/{id}")]
+        public async Task<IActionResult> GetOneReservation(int id)
         {
             await Db.Connection.OpenAsync();
             var query = new ReservationQuery(Db);
-            var result = await query.FindOneAsync(id);
+            var result = await query.GetOneReservation(id);
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
         }
 
-        // POST api/blog
+        // POST api/Reservation/New
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Reservation body)
+        [Route("New")]
+        public async Task<IActionResult> PostOne([FromBody]Reservation body)
         {
             await Db.Connection.OpenAsync();
             body.Db = Db;
-            await body.InsertAsync();
+            await body.InsertOne();
             return new OkObjectResult(body);
         }
 
         // PUT api/blog/5
         [HttpPut("{id}")]
+        [Route("Update/{id}")]
         public async Task<IActionResult> PutOne(int id, [FromBody]Reservation body)
         {
             await Db.Connection.OpenAsync();
             var query = new ReservationQuery(Db);
-            var result = await query.FindOneAsync(id);
+            var result = await query.GetOneReservation(id);
             if (result is null)
                 return new NotFoundResult();
+            result.reservationID = body.reservationID;
             result.crDistance = body.crDistance;
             result.date = body.date;
-            result.restaurantID = body.restaurantID;
+            result.restaurantID  = body.restaurantID;
             result.customerID = body.customerID;
-            await result.UpdateAsync();
+            await result.UpdateOne();
             return new OkObjectResult(result);
-        }
-
-        // DELETE api/blog/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOne(int id)
-        {
-            await Db.Connection.OpenAsync();
-            var query = new ReservationQuery(Db);
-            var result = await query.FindOneAsync(id);
-            if (result is null)
-                return new NotFoundResult();
-            await result.DeleteAsync();
-            return new OkResult();
-        }
-
-        // DELETE api/blog
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAll()
-        {
-            await Db.Connection.OpenAsync();
-            var query = new ReservationQuery(Db);
-            await query.DeleteAllAsync();
-            return new OkResult();
         }
 
         public AppDb Db { get; }

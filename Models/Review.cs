@@ -27,28 +27,23 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task InsertAsync()
+        public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `Review` (`comment`, `rating`, `restaurantID`, `customerID`, `date`) VALUES (@comment, @rating, @restaurantID, @customerID, @date);";
-            BindParams(cmd);
-            await cmd.ExecuteNonQueryAsync();
-            reviewNumber = (int)cmd.LastInsertedId;
-        }
-
-        public async Task UpdateAsync()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `Review` SET `comment` = @comment, `rating` = @rating, `restaurantID` = @restaurantID, `customerID` = @customerID, `date` = @date WHERE `reviewNumber` = @reviewNumber";
-            BindParams(cmd);
+            cmd.CommandText = "newReview";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindId(cmd);
+            BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
+            reviewNumber = (int) cmd.LastInsertedId;
         }
 
-        public async Task DeleteAsync()
+        public async Task UpdateOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Review` WHERE `reviewNumber` = @reviewNumber;";
+            cmd.CommandText = "updateReviewInformation";
+            cmd.CommandType = CommandType.StoredProcedure;
+            BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -57,7 +52,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@reviewNumber",
+                ParameterName = "@rNum",
                 DbType = DbType.Int32,
                 Value = reviewNumber,
             });
@@ -79,13 +74,13 @@ namespace DatabaseProject
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@restaurantID",
+                ParameterName = "@rid",
                 DbType = DbType.Int32,
                 Value = restaurantID,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@customerID",
+                ParameterName = "@cid",
                 DbType = DbType.Int32,
                 Value = customerID,
             });

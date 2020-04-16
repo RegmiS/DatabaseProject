@@ -54,7 +54,7 @@ namespace DatabaseProject
             });
         }
 
-        private void BindParams(MySqlCommand cmd)
+         void BindParams(MySqlCommand cmd)
         {
             cmd.Parameters.Add(new MySqlParameter
             {

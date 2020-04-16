@@ -23,28 +23,23 @@ namespace DatabaseProject
             Db = db;
         }
 
-        public async Task InsertAsync()
+        public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `Search_Criteria` (`customerID`, `searchCriteria`) VALUES (@customerID, @searchCriteria);";
-            BindParams(cmd);
-            await cmd.ExecuteNonQueryAsync();
-            searchID = (int)cmd.LastInsertedId;
-        }
-
-        public async Task UpdateAsync()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `Search_Criteria` SET `customerID` = @customerID WHERE `SearchID` = @Searchid";
-            BindParams(cmd);
+            cmd.CommandText = "newSearchCriteria";
+            cmd.CommandType = CommandType.StoredProcedure;
             BindId(cmd);
+            BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
+            searchID = (int) cmd.LastInsertedId;
         }
 
-        public async Task DeleteAsync()
+        public async Task UpdateOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `Search_Criteria` WHERE `SearchID` = @Searchid;";
+            cmd.CommandText = "updateSearch_CriteriaInformation";
+            cmd.CommandType = CommandType.StoredProcedure;
+            BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -53,7 +48,7 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@Searchid",
+                ParameterName = "@sid",
                 DbType = DbType.Int32,
                 Value = searchID,
             });
@@ -63,15 +58,15 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@customerID",
+                ParameterName = "@cid",
                 DbType = DbType.Int32,
                 Value = customerID,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@searchCriteria",
+                ParameterName = "@sCrit",
                 DbType = DbType.String,
-                Value = customerID,
+                Value = searchCriteria,
             });
         }
 
