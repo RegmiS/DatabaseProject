@@ -1,9 +1,11 @@
+//controller for ethnic_food procedures
+
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DatabaseProject.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Ethnic_Food")]
     public class Ethnic_FoodController : ControllerBase
     {
         public Ethnic_FoodController(AppDb db)
@@ -11,73 +13,60 @@ namespace DatabaseProject.Controllers
             Db = db;
         }
 
-        // GET api/blog
+        // GET api/Ethnic_Food/GetAll
+        // gets all ethnic foods in the database
         [HttpGet]
-        public async Task<IActionResult> GetLatest()
+        [Route("GetAll")]
+        public async Task<IActionResult> GetAll()
         {
             await Db.Connection.OpenAsync();
             var query = new Ethnic_FoodQuery(Db);
-            var result = await query.LatestPostsAsync();
+            var result = await query.GetAll();
             return new OkObjectResult(result);
         }
 
-        // GET api/blog/5
+        // GET api/Ethnic_Food/Get/Pizza
+        // gets a specific ethnic food based on the name
         [HttpGet("{name}")]
+        [Route("Get/{name}")]
         public async Task<IActionResult> GetOne(string name)
         {
             await Db.Connection.OpenAsync();
             var query = new Ethnic_FoodQuery(Db);
-            var result = await query.FindOneAsync(name);
+            var result = await query.GetOne(name);
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
         }
 
-        // POST api/blog
+        // POST api/Ethnic_Food/New
+        // creates a new ethnic food and stores in the database
+        // enter in food name and its ethnicity in the body
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Ethnic_Food body)
+        [Route("New")]
+        public async Task<IActionResult> PostOne([FromBody]Ethnic_Food body)
         {
             await Db.Connection.OpenAsync();
             body.Db = Db;
-            await body.InsertAsync();
+            await body.InsertOne();
             return new OkObjectResult(body);
         }
 
-        // PUT api/blog/5
+        // PUT api/Ethnic_Food/Update/Pizza
+        // updates food ethnicity in the database
+        // enter in new ethnicity in the body
         [HttpPut("{name}")]
+        [Route("Update/{name}")]
         public async Task<IActionResult> PutOne(string name, [FromBody]Ethnic_Food body)
         {
             await Db.Connection.OpenAsync();
             var query = new Ethnic_FoodQuery(Db);
-            var result = await query.FindOneAsync(name);
+            var result = await query.GetOne(name);
             if (result is null)
                 return new NotFoundResult();
             result.ethnicity = body.ethnicity;
-            await result.UpdateAsync();
+            await result.UpdateOne();
             return new OkObjectResult(result);
-        }
-
-        // DELETE api/blog/5
-        [HttpDelete("{name}")]
-        public async Task<IActionResult> DeleteOne(string name)
-        {
-            await Db.Connection.OpenAsync();
-            var query = new Ethnic_FoodQuery(Db);
-            var result = await query.FindOneAsync(name);
-            if (result is null)
-                return new NotFoundResult();
-            await result.DeleteAsync();
-            return new OkResult();
-        }
-
-        // DELETE api/blog
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAll()
-        {
-            await Db.Connection.OpenAsync();
-            var query = new Ethnic_FoodQuery(Db);
-            await query.DeleteAllAsync();
-            return new OkResult();
         }
 
         public AppDb Db { get; }

@@ -1,4 +1,4 @@
-// represents a single ethnic food
+// represents a single restaurant's food item
 
 using System.Data;
 using System.Threading.Tasks;
@@ -6,63 +6,63 @@ using MySql.Data.MySqlClient;
 
 namespace DatabaseProject
 {
-    public class Ethnic_Food
+    public class Has_Ethnic_Food
     {
-        public string name { get; set; }
-        public string ethnicity { get; set; }
+        public int restaurantID { get; set; }
+        public string foodName { get; set; }
 
         internal AppDb Db { get; set; }
 
-        public Ethnic_Food()
+        public Has_Ethnic_Food()
         {
         }
 
-        internal Ethnic_Food(AppDb db)
+        internal Has_Ethnic_Food(AppDb db)
         {
             Db = db;
         }
 
-        // insert new ethnic food
+        // insert new ethnic food for restaurant
         public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = "newEthnicFood";
+            cmd.CommandText = "newRestaurantFood";
             cmd.CommandType = CommandType.StoredProcedure;
             BindId(cmd);
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
 
-        // update an existing ethnic food
-        public async Task UpdateOne()
+        // delete an existing ethnic food from a restaurant
+        public async Task DeleteOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = "updateFoodEthnicity";
+            cmd.CommandText = "deleteRestaurantFood";
             cmd.CommandType = CommandType.StoredProcedure;
-            BindParams(cmd);
             BindId(cmd);
+            BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
 
-        // binds food name
+        // bind restaurant ID
         private void BindId(MySqlCommand cmd)
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@fname",
+                ParameterName = "@id",
                 DbType = DbType.String,
-                Value = name,
+                Value = restaurantID,
             });
         }
 
-        // binds parameters
+        // bind parameters
         private void BindParams(MySqlCommand cmd)
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@eEthnicity",
+                ParameterName = "@food",
                 DbType = DbType.String,
-                Value = ethnicity,
+                Value = foodName,
             });
         }
 

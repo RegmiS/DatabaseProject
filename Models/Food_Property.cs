@@ -1,4 +1,4 @@
-// represents a single ethnic food
+// represents a single food property
 
 using System.Data;
 using System.Threading.Tasks;
@@ -6,38 +6,38 @@ using MySql.Data.MySqlClient;
 
 namespace DatabaseProject
 {
-    public class Ethnic_Food
+    public class Food_Property
     {
-        public string name { get; set; }
-        public string ethnicity { get; set; }
+        public string foodName { get; set; }
+        public string foodProperty { get; set; }
 
         internal AppDb Db { get; set; }
 
-        public Ethnic_Food()
+        public Food_Property()
         {
         }
 
-        internal Ethnic_Food(AppDb db)
+        internal Food_Property(AppDb db)
         {
             Db = db;
         }
 
-        // insert new ethnic food
+        // insert a new food property
         public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = "newEthnicFood";
+            cmd.CommandText = "newFoodProperty";
             cmd.CommandType = CommandType.StoredProcedure;
             BindId(cmd);
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
 
-        // update an existing ethnic food
+        // update an existing food property
         public async Task UpdateOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = "updateFoodEthnicity";
+            cmd.CommandText = "updateFoodProperty";
             cmd.CommandType = CommandType.StoredProcedure;
             BindParams(cmd);
             BindId(cmd);
@@ -51,7 +51,7 @@ namespace DatabaseProject
             {
                 ParameterName = "@fname",
                 DbType = DbType.String,
-                Value = name,
+                Value = foodName,
             });
         }
 
@@ -60,9 +60,9 @@ namespace DatabaseProject
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@eEthnicity",
+                ParameterName = "@foodProperty",
                 DbType = DbType.String,
-                Value = ethnicity,
+                Value = foodProperty,
             });
         }
 

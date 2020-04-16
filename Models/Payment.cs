@@ -1,4 +1,4 @@
-// represents a single owner, needs insert, update, and delete for owners with certain ids
+// represents a single payment
 
 using System.Data;
 using System.Threading.Tasks;
@@ -6,66 +6,66 @@ using MySql.Data.MySqlClient;
 
 namespace DatabaseProject
 {
-    public class Owner
+    public class Payment
     {
-        public int ownerID { get; set; }
-        public string firstName { get; set; }
-        public string lastName { get; set; }
+        public int paymentID { get; set; }
+        public int reservationID { get; set; }
+        public string paymentMethod { get; set; }
+        public float paymentAmount { get; set; }
 
         internal AppDb Db { get; set; }
 
-        public Owner()
+        public Payment()
         {
         }
 
-        internal Owner(AppDb db)
+        internal Payment(AppDb db)
         {
             Db = db;
         }
 
+        // insert a new payment 
         public async Task InsertOne()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = "newOwner";
+            cmd.CommandText = "newPaymentInformation";
             cmd.CommandType = CommandType.StoredProcedure;
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
-            ownerID = (int)cmd.LastInsertedId;
+            paymentID = (int)cmd.LastInsertedId;
         }
 
-        public async Task UpdateOne()
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = "updateOwnerInformation";
-            cmd.CommandType = CommandType.StoredProcedure;
-            BindParams(cmd);
-            BindId(cmd);
-            await cmd.ExecuteNonQueryAsync();
-        }
-
+        // bind payment ID
         private void BindId(MySqlCommand cmd)
         {
             cmd.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@id",
                 DbType = DbType.Int32,
-                Value = ownerID,
+                Value = paymentID,
             });
         }
 
+        // bind parameters
         private void BindParams(MySqlCommand cmd)
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@first",
-                DbType = DbType.String,
-                Value = firstName,
+                ParameterName = "@reservation",
+                DbType = DbType.Int32,
+                Value = reservationID,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@last",
+                ParameterName = "@method",
                 DbType = DbType.String,
-                Value = lastName,
+                Value = paymentMethod,
+            });
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@amount",
+                DbType = DbType.Single,
+                Value = paymentAmount,
             });
         }
 
